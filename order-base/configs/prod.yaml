@@ -1,0 +1,28 @@
+#env must be one of those three: local, dev, prod
+env: prod
+shutdown-timeout:
+
+postgres:
+  host:
+  port: 
+  db-name:
+  user:
+  password:
+
+  max-conns:
+  conn-max-lifetime:
+  conn-max-idle-time:
+
+http-server:
+  host:
+  port:
+  read-header-timeout:
+  write-timeout:
+  read-timeout:
+
+kafka:
+  brokers:
+  -
+  topic:
+  group-id:
+  max-wait:
