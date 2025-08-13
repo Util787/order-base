@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS deliveries (
-    delivery_id BIGSERIAL PRIMARY KEY, -- Im not sure if I could use name as pk so I created this field
+    delivery_uid VARCHAR(50) PRIMARY KEY, -- Im not sure if I could use name as pk so I created this field
     name VARCHAR(255) NOT NULL,
     phone VARCHAR(16) NOT NULL,
     zip VARCHAR(20) NOT NULL,
@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS orders (
     order_uid VARCHAR(50) PRIMARY KEY,
     track_number VARCHAR(100) NOT NULL,
     entry VARCHAR(100) NOT NULL,
-    delivery_id BIGINT UNIQUE REFERENCES deliveries(delivery_id),
+    delivery_uid VARCHAR(50) UNIQUE REFERENCES deliveries(delivery_uid),
     payment_transaction VARCHAR(50) UNIQUE REFERENCES payments(transaction),
     locale VARCHAR(10) NOT NULL,
     internal_signature VARCHAR(100) NOT NULL,
@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS orders (
     delivery_service VARCHAR(100) NOT NULL,
     shardkey VARCHAR(100) NOT NULL,
     sm_id INTEGER NOT NULL,
-    date_created TIMESTAMP NOT NULL,
+    date_created TIMESTAMPTZ NOT NULL,
     oof_shard VARCHAR(100) NOT NULL
 );
 
