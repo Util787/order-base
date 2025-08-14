@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/ilyakaznacheev/cleanenv"
+	"github.com/joho/godotenv"
 )
 
 const (
@@ -48,15 +49,22 @@ type KafkaConfig struct {
 	MaxWait time.Duration `yaml:"max-wait"`
 }
 
-func MustLoadConfig(path string) *Config {
-	if _, err := os.Stat(path); os.IsExist(err) {
+// MustLoadConfig expects CONFIG_PATH environment variable to be already set
+func MustLoadConfig() *Config {
+	err := godotenv.Load()
+	if err != nil {
+		panic("Failed to load .env file")
+	}
+
+	path := os.Getenv("CONFIG_PATH")
+
+	if _, err = os.Stat(path); os.IsNotExist(err) {
 		panic("Config path does not exist")
 	}
 
 	var cfg Config
 
-	err := cleanenv.ReadConfig(path, &cfg)
-
+	err = cleanenv.ReadConfig(path, &cfg)
 	if err != nil {
 		panic("Error reading config: " + err.Error())
 	}
