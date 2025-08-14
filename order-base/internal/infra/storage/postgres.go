@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"log/slog"
 
 	sq "github.com/Masterminds/squirrel"
 	"github.com/Util787/order-base/internal/common"
@@ -22,7 +21,7 @@ type PostgresStorage struct {
 	pgxPool *pgxpool.Pool
 }
 
-func MustInitPostgres(ctx context.Context, cfg config.PostgresConfig, log *slog.Logger) PostgresStorage {
+func MustInitPostgres(ctx context.Context, cfg config.PostgresConfig) PostgresStorage {
 	connStr := fmt.Sprintf(
 		"postgres://%s:%s@%s:%d/%s?sslmode=disable",
 		cfg.User, cfg.Password, cfg.Host, cfg.Port, cfg.DbName,
