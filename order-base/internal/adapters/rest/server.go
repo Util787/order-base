@@ -9,8 +9,6 @@ import (
 	"github.com/Util787/order-base/internal/config"
 )
 
-const maxHeaderBytes = 1 << 20 // 1 MB
-
 type Server struct {
 	httpServer *http.Server
 }
@@ -24,7 +22,7 @@ func NewHTTPServer(env string, config config.HTTPServerConfig, log *slog.Logger,
 	httpServer := &http.Server{
 		Addr:              config.Host + ":" + strconv.Itoa(config.Port),
 		Handler:           handler.InitRoutes(env),
-		MaxHeaderBytes:    maxHeaderBytes,
+		MaxHeaderBytes:    1 << 20, // 1 MB
 		ReadHeaderTimeout: config.ReadHeaderTimeout,
 		WriteTimeout:      config.WriteTimeout,
 		ReadTimeout:       config.ReadTimeout,
