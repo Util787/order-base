@@ -5,6 +5,7 @@ import (
 	"log/slog"
 	"os"
 
+	kafka_subscriber "github.com/Util787/order-base/internal/adapters/kafka-subscriber"
 	"github.com/Util787/order-base/internal/adapters/rest"
 	"github.com/Util787/order-base/internal/config"
 	"github.com/Util787/order-base/internal/infra/storage"
@@ -28,7 +29,11 @@ func main() {
 	// usecases
 	orderUsecase := usecase.NewOrderUsecase(log, &postgreStorage, &inMemoryStorage)
 
-	//rest
+	// kafka
+	kafkaSub := kafka_subscriber.NewKafkaSubscriber(log, cfg.KafkaConfig, &orderUsecase, 100)
+	kafkaSub.Subscribe(context.Background(), 2, 2)
+
+	// rest
 	serv := rest.NewHTTPServer(cfg.Env, cfg.HTTPServerConfig, log, &orderUsecase)
 	log.Info("Starting HTTP server", slog.String("host", cfg.HTTPServerConfig.Host), slog.Int("port", cfg.HTTPServerConfig.Port))
 	serv.Run()
