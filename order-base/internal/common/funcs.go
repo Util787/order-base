@@ -2,7 +2,7 @@ package common
 
 import "runtime"
 
-// GetOperationName returns PackageName.FunctionName
+// GetOperationName returns PackageName.FunctionName of the func it was called in
 //
 // it should be used for logging or error wrapping
 func GetOperationName() string {
