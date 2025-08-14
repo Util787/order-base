@@ -1,10 +1,12 @@
 package rest
 
 import (
+	"context"
 	"log/slog"
 	"strings"
 	"time"
 
+	"github.com/Util787/order-base/internal/common"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
@@ -17,7 +19,8 @@ func NewBasicMiddleware(log *slog.Logger) gin.HandlerFunc {
 		op := strings.TrimSuffix(c.HandlerName(), "-fm")
 
 		c.Set("op", op)
-		c.Set("request_id", requestId)
+		// gin only allows to use this way or clone request
+		c.Request = c.Request.WithContext(context.WithValue(c.Request.Context(), common.ContextKey("request_id"), requestId))
 
 		log := log.With(slog.String("op", op), slog.String("request_id", requestId))
 
