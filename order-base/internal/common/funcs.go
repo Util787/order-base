@@ -1,6 +1,10 @@
 package common
 
-import "runtime"
+import (
+	"context"
+	"log/slog"
+	"runtime"
+)
 
 // GetOperationName returns PackageName.FunctionName of the func it was called in
 //
@@ -13,4 +17,10 @@ func GetOperationName() string {
 	}
 
 	return runtime.FuncForPC(function).Name()
+}
+
+// Should be used in the start of every handler and usecase
+func LogOpAndReqId(ctx context.Context, op string, log *slog.Logger) *slog.Logger {
+	requestID := ctx.Value(ContextKey("request_id")).(string)
+	return log.With(slog.String("op", op), slog.String("request_id", requestID))
 }

@@ -18,7 +18,6 @@ func NewBasicMiddleware(log *slog.Logger) gin.HandlerFunc {
 		requestId := uuid.NewString()
 		op := strings.TrimSuffix(c.HandlerName(), "-fm")
 
-		c.Set("op", op)
 		// gin only allows to use this way or clone request
 		c.Request = c.Request.WithContext(context.WithValue(c.Request.Context(), common.ContextKey("request_id"), requestId))
 

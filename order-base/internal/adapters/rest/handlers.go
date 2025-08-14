@@ -21,7 +21,7 @@ type Handler struct {
 }
 
 func (h *Handler) getOrderById(c *gin.Context) {
-	log := logOpAndReqId(c, h.log)
+	log := common.LogOpAndReqId(c.Request.Context(), common.GetOperationName(), h.log)
 
 	orderUID := c.Param("order_id")
 	log.Debug("Recieved order_id", slog.String("order_id", orderUID))
@@ -37,14 +37,4 @@ func (h *Handler) getOrderById(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, order)
-}
-
-// Should be used in the start of every handler
-func logOpAndReqId(c *gin.Context, log *slog.Logger) *slog.Logger {
-	op := c.GetString("op")
-	if op == "" {
-		op = common.GetOperationName()
-	}
-	requestID := c.Request.Context().Value(common.ContextKey("request_id")).(string)
-	return log.With(slog.String("op", op), slog.String("request_id", requestID))
 }
