@@ -22,15 +22,15 @@ func (k *KafkaSubscriber) fetcher(ctx context.Context) {
 
 	for {
 		kafkaMsg, err := k.kafkaReader.FetchMessage(ctx)
-		msgUID := uuid.NewString()
-
-		log := log.With(slog.String("message_uid", msgUID))
-		log.Debug("fetching message from Kafka", slog.Any("message", kafkaMsg))
-
 		if err != nil {
 			log.Error("failed to fetch message from Kafka", slog.String("error", err.Error()))
 			continue
 		}
+
+		msgUID := uuid.NewString()
+
+		log := log.With(slog.String("message_id", msgUID))
+		log.Debug("fetching message from Kafka", slog.Any("message", kafkaMsg))
 
 		k.messageCh <- message{
 			content: &kafkaMsg,
@@ -40,7 +40,7 @@ func (k *KafkaSubscriber) fetcher(ctx context.Context) {
 }
 
 func (k *KafkaSubscriber) saveOrderHandler(ctx context.Context) {
-	log := k.log.With(slog.String("op", common.GetOperationName()))
+	op := common.GetOperationName()
 
 	for {
 		select {
@@ -48,7 +48,8 @@ func (k *KafkaSubscriber) saveOrderHandler(ctx context.Context) {
 			return
 		case msg := <-k.messageCh:
 			start := time.Now()
-			log := log.With(slog.String("message_uid", msg.UID))
+			ctx = context.WithValue(ctx, common.ContextKey("message_id"), msg.UID)
+			log := common.LogOpAndId(ctx, op, k.log)
 			log.Info("start handling message", slog.Time("start", start))
 
 			var order models.Order

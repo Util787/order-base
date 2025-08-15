@@ -11,7 +11,7 @@ import (
 
 func (u *OrderUsecase) GetOrderById(ctx context.Context, id string) (models.Order, error) {
 	op := common.GetOperationName()
-	log := common.LogOpAndReqId(ctx, op, u.log)
+	log := common.LogOpAndId(ctx, op, u.log)
 
 	order, err := u.cacheStorage.GetOrder(ctx, id)
 	if err == nil {
@@ -29,7 +29,7 @@ func (u *OrderUsecase) GetOrderById(ctx context.Context, id string) (models.Orde
 
 func (u *OrderUsecase) SaveOrder(ctx context.Context, order models.Order) error {
 	op := common.GetOperationName()
-	log := common.LogOpAndReqId(ctx, op, u.log)
+	log := common.LogOpAndId(ctx, op, u.log)
 
 	if err := u.orderStorage.SaveOrder(ctx, order); err != nil {
 		return fmt.Errorf("%s: %w", op, err)

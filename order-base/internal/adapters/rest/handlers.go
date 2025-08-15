@@ -21,7 +21,7 @@ type Handler struct {
 }
 
 func (h *Handler) getOrderById(c *gin.Context) {
-	log := common.LogOpAndReqId(c.Request.Context(), common.GetOperationName(), h.log)
+	log := common.LogOpAndId(c.Request.Context(), common.GetOperationName(), h.log)
 
 	orderUID := c.Param("order_id")
 	log.Debug("Recieved order_id", slog.String("order_id", orderUID))

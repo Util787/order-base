@@ -20,7 +20,16 @@ func GetOperationName() string {
 }
 
 // Should be used in the start of every handler and usecase
-func LogOpAndReqId(ctx context.Context, op string, log *slog.Logger) *slog.Logger {
+func LogOpAndId(ctx context.Context, op string, log *slog.Logger) *slog.Logger {
 	requestID := ctx.Value(ContextKey("request_id"))
-	return log.With(slog.String("op", op), slog.Any("request_id", requestID))
+	if requestID != nil {
+		return log.With(slog.String("op", op), slog.Any("request_id", requestID))
+	}
+
+	msgID := ctx.Value(ContextKey("message_id"))
+	if msgID != nil {
+		return log.With(slog.String("op", op), slog.Any("message_id", msgID))
+	}
+
+	return log.With(slog.String("op", op))
 }
