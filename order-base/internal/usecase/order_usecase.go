@@ -24,6 +24,10 @@ func (u *OrderUsecase) GetOrderById(ctx context.Context, id string) (models.Orde
 	if err != nil {
 		return models.Order{}, fmt.Errorf("%s: %w", op, err)
 	}
+	if err = u.cacheStorage.CacheOrder(ctx, order.OrderUID, order, &common.DefaultTTL); err != nil {
+		log.Warn("failed to cache order", slog.String("order_id", order.OrderUID), slog.String("error", err.Error()))
+	}
+
 	return order, nil
 }
 
