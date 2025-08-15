@@ -46,7 +46,7 @@ func main() {
 	kafkaSub := kafka_subscriber.NewKafkaSubscriber(log, cfg.KafkaConfig, &orderUsecase, messageChanBuf)
 
 	// rest
-	serv := rest.NewHTTPServer(cfg.Env, cfg.HTTPServerConfig, log, &orderUsecase)
+	serv := rest.NewHTTPServer(log, cfg.Env, cfg.HTTPServerConfig, &orderUsecase)
 
 	// start
 	go kafkaSub.Subscribe(context.Background(), numFetchers, numHandlers)

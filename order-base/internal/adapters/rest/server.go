@@ -13,7 +13,7 @@ type Server struct {
 	httpServer *http.Server
 }
 
-func NewHTTPServer(env string, config config.HTTPServerConfig, log *slog.Logger, orderUsecase OrderUsecase) Server {
+func NewHTTPServer(log *slog.Logger, env string, config config.HTTPServerConfig, orderUsecase OrderUsecase) Server {
 	handler := Handler{
 		log:          log,
 		orderUsecase: orderUsecase,
