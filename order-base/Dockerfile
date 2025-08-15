@@ -13,5 +13,6 @@ WORKDIR /app
 COPY --from=build /app/build/executable/app ./app
 COPY --from=build /app/configs ./configs
 COPY --from=build /app/.env ./.env
+COPY --from=build /app/ui ./ui
 
 CMD ["/app/app"]

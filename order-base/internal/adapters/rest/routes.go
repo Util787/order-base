@@ -15,9 +15,11 @@ func (h *Handler) InitRoutes(env string) *gin.Engine {
 		router.Use(gin.Logger())
 	}
 
+	router.StaticFile("/order-base", "./ui/index.html")
+
 	v1 := router.Group("/api/v1")
 	v1.Use(NewBasicMiddleware(h.log))
-	
+
 	{
 		orders := v1.Group("/orders")
 		{
