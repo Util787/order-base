@@ -34,7 +34,7 @@ func (u *OrderUsecase) SaveOrder(ctx context.Context, order models.Order) error 
 	if err := u.orderStorage.SaveOrder(ctx, order); err != nil {
 		return fmt.Errorf("%s: %w", op, err)
 	}
-	if err := u.cacheStorage.CacheOrder(ctx, order.OrderUID, order); err != nil {
+	if err := u.cacheStorage.CacheOrder(ctx, order.OrderUID, order, &common.DefaultTTL); err != nil {
 		log.Warn("failed to cache order", slog.String("order_id", order.OrderUID), slog.String("error", err.Error()))
 	}
 

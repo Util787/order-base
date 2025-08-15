@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 	"log/slog"
+	"time"
 
 	"github.com/Util787/order-base/internal/models"
 )
@@ -14,7 +15,7 @@ type OrderStorage interface {
 
 type CacheStorage interface {
 	GetOrder(ctx context.Context, key string) (models.Order, error)
-	CacheOrder(ctx context.Context, key string, order models.Order) error
+	CacheOrder(ctx context.Context, key string, order models.Order, ttl *time.Duration) error
 }
 
 type OrderUsecase struct {

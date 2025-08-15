@@ -6,9 +6,11 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	kafka_subscriber "github.com/Util787/order-base/internal/adapters/kafka-subscriber"
 	"github.com/Util787/order-base/internal/adapters/rest"
+	"github.com/Util787/order-base/internal/common"
 	"github.com/Util787/order-base/internal/config"
 	"github.com/Util787/order-base/internal/infra/storage"
 	"github.com/Util787/order-base/internal/logger/slogpretty"
@@ -24,7 +26,8 @@ const (
 
 // in-memory storage vars
 var (
-	loadLimit uint64 = 100
+	loadLimit       uint64 = 100
+	cleanUpInterval        = time.Minute
 )
 
 func main() {
@@ -36,11 +39,11 @@ func main() {
 	// storages
 	postgreStorage := storage.MustInitPostgres(context.Background(), cfg.PostgresConfig)
 
-	inMemoryStorage := storage.NewInMemoryStorage(context.Background(), 100)
-	inMemoryStorage.LoadOrders(context.Background(), &postgreStorage, &loadLimit)
+	inMemoryStorage := storage.NewInMemoryStorage(context.Background(), 100, cleanUpInterval) // inMemoryStorage is pointer
+	inMemoryStorage.LoadOrders(context.Background(), &postgreStorage, &loadLimit, &common.DefaultTTL)
 
 	// usecases
-	orderUsecase := usecase.NewOrderUsecase(log, &postgreStorage, &inMemoryStorage)
+	orderUsecase := usecase.NewOrderUsecase(log, &postgreStorage, inMemoryStorage)
 
 	// kafka
 	kafkaSub := kafka_subscriber.NewKafkaSubscriber(log, cfg.KafkaConfig, &orderUsecase, messageChanBuf)
