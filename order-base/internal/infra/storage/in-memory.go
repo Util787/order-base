@@ -26,8 +26,8 @@ func NewInMemoryStorage(ctx context.Context, startSize int, cleanUpInterval time
 		mu:     sync.RWMutex{},
 	}
 
-	ticker := time.NewTicker(cleanUpInterval)
 	go func() {
+		ticker := time.NewTicker(cleanUpInterval)
 		for range ticker.C {
 			strg.cleanUpExpiredOrders()
 		}
