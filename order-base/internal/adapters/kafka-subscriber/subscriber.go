@@ -17,7 +17,7 @@ type KafkaSubscriber struct {
 	log          *slog.Logger
 	kafkaReader  *kafka.Reader
 	orderUsecase OrderUsecase
-	messageCh    chan kafka.Message
+	messageCh    chan message
 }
 
 func NewKafkaSubscriber(log *slog.Logger, cfg config.KafkaConfig, orderUsecase OrderUsecase, msgChanBuf uint) *KafkaSubscriber {
@@ -34,7 +34,7 @@ func NewKafkaSubscriber(log *slog.Logger, cfg config.KafkaConfig, orderUsecase O
 		log:          log,
 		kafkaReader:  kafkaReader,
 		orderUsecase: orderUsecase,
-		messageCh:    make(chan kafka.Message, msgChanBuf),
+		messageCh:    make(chan message, msgChanBuf),
 	}
 }
 
