@@ -1,0 +1,78 @@
+services:
+  order-base:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    depends_on:
+      - postgres
+      - kafka
+      - zookeeper
+    ports:
+      - "${ORDER_BASE_PORT}:${HTTP_SERVER_PORT}"
+    networks:
+      - order-base
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:${CONFLUENTINC_VERSION}
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: ${ZOOKEEPER_PORT}
+    ports:
+      - "${ZOOKEEPER_PORT}:2181"
+    networks:
+      - order-base
+
+  kafka:
+    image: confluentinc/cp-kafka:${CONFLUENTINC_VERSION}
+    container_name: kafka
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,OUTSIDE://localhost:${KAFKA_PORT}
+      KAFKA_LISTENERS: PLAINTEXT://kafka:9092,OUTSIDE://0.0.0.0:${KAFKA_PORT}
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: true
+    ports:
+      - "9092:9092"
+      - "${KAFKA_PORT}:${KAFKA_PORT}"
+    networks:
+      - order-base
+
+  postgres:
+    image: postgres:${POSTGRES_VERSION}
+    container_name: postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB_NAME}
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    volumes:
+      - ./.database/postgres/data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - order-base
+
+  migrate:
+    image: migrate/migrate
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+    - ../migrations/postgres:/migrations
+    command: ["-path", "/migrations/", "-database", "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:5432/${POSTGRES_DB_NAME}?sslmode=disable", "up"]
+    networks:
+      - order-base
+
+networks:
+  order-base:
+    driver: bridge
