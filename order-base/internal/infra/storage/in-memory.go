@@ -42,26 +42,24 @@ func (s *InMemoryStorage) LoadOrders(ctx context.Context, orderStorage OrderStor
 func (s *InMemoryStorage) CacheOrder(ctx context.Context, key string, order models.Order) error {
 	op := common.GetOperationName()
 
-	select {
-	case <-ctx.Done():
+	if ctx.Err() != nil {
 		return fmt.Errorf("%s: %w", op, ctx.Err())
-	default:
-		s.orders[key] = order
-		return nil
 	}
+
+	s.orders[key] = order
+	return nil
 }
 
 func (s *InMemoryStorage) GetOrder(ctx context.Context, key string) (models.Order, error) {
 	op := common.GetOperationName()
 
-	select {
-	case <-ctx.Done():
+	if ctx.Err() != nil {
 		return models.Order{}, fmt.Errorf("%s: %w", op, ctx.Err())
-	default:
-		order, exists := s.orders[key]
-		if !exists {
-			return models.Order{}, fmt.Errorf("%s: %w", op, models.ErrOrdersNotFound)
-		}
-		return order, nil
 	}
+
+	order, exists := s.orders[key]
+	if !exists {
+		return models.Order{}, fmt.Errorf("%s: %w", op, models.ErrOrdersNotFound)
+	}
+	return order, nil
 }
