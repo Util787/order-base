@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"flag"
 	"fmt"
 	"log"
 	"math/rand"
@@ -13,8 +14,6 @@ import (
 )
 
 var numItems int
-
-const broker = "localhost:9093"
 
 type Delivery struct {
 	DeliveryUID string `json:"delivery_uid"`
@@ -154,6 +153,11 @@ func generateRandomOrder() Order {
 }
 
 func main() {
+	var port int
+	flag.IntVar(&port, "p", 9092, "Kafka broker port")
+	flag.Parse()
+	broker := fmt.Sprintf("localhost:%d", port)
+
 	var numOrders int
 	fmt.Println("Enter num of orders:")
 	fmt.Scan(&numOrders)
