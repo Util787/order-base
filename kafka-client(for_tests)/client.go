@@ -155,7 +155,11 @@ func generateRandomOrder() Order {
 func main() {
 	var port int
 	flag.IntVar(&port, "p", 9092, "Kafka broker port")
+	
+	var topic string
+	flag.StringVar(&topic, "t", "orders", "Kafka topic")
 	flag.Parse()
+	
 	broker := fmt.Sprintf("localhost:%d", port)
 
 	var numOrders int
@@ -167,7 +171,7 @@ func main() {
 
 	writer := kafka.NewWriter(kafka.WriterConfig{
 		Brokers: []string{broker},
-		Topic:   "orders",
+		Topic:   topic,
 	})
 	defer writer.Close()
 
