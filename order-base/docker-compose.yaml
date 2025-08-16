@@ -38,7 +38,6 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: true
     ports:
-      - "9092:9092"
       - "${KAFKA_PORT}:${KAFKA_PORT}"
     networks:
       - order-base
