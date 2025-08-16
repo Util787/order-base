@@ -68,7 +68,7 @@ http://localhost:ORDER_BASE_PORT/order-base
 ```
 Replace `ORDER_BASE_PORT` with the actual port from your `.env`
 
-## Testing with Kafka Client
+## Testing with Kafka Client 🛠️
 
 You can use provided `kafka-client(for_tests)` to send test orders to the Kafka topic
 
@@ -77,13 +77,13 @@ You can use provided `kafka-client(for_tests)` to send test orders to the Kafka 
     cd "kafka-client(for_tests)"
     ```
 
-2.  Run the client, specifying the Kafka broker port (default is 9092):
+2.  Run the client, specifying the Kafka broker port (default is 9092) and topic (default is 'orders'):
     ```bash
-    go run client.go -p KAFKA_PORT
+    go run client.go -p KAFKA_PORT -t KAFKA_TOPIC
     ```
-    Replace `KAFKA_PORT` with the actual Kafka port from your `.env`
+    Replace `KAFKA_PORT` and `KAFKA_TOPIC` with the actual values from your `.env`
 
-    The client will then prompt you to enter the number of orders and items per order to send. These orders will be published to the "orders" Kafka topic, and the `order-base` service will consume and process them
+    The client will then prompt you to enter the number of orders and items per order to send. These orders will be published to the Kafka topic, and the `order-base` service will consume and process them
 
 ## Manual run
 
