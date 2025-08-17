@@ -19,7 +19,7 @@ type InMemoryStorage struct {
 //
 // startSize defines the initial capacity of the order cache map.
 //
-// cleanUpInterval defines the interval for cleaning up expired orders.
+// cleanUpInterval defines the interval for cleaning up expired cache.
 func NewInMemoryStorage(ctx context.Context, startSize int, cleanUpInterval time.Duration) *InMemoryStorage {
 	strg := &InMemoryStorage{
 		orders: make(map[string]orderCache, startSize),
