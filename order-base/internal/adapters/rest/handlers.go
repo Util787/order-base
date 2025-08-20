@@ -32,6 +32,10 @@ func (h *Handler) getOrderById(c *gin.Context) {
 			newErrorResponse(c, log, http.StatusNotFound, "order not found", err)
 			return
 		}
+		if errors.Is(err, models.ErrValidation) {
+			newErrorResponse(c, log, http.StatusBadRequest, "invalid input", err)
+			return
+		}
 		newErrorResponse(c, log, http.StatusInternalServerError, "failed to get order", err)
 		return
 	}
