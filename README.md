@@ -131,3 +131,8 @@ kafka:
   group-id:
   max-wait:
 ```
+
+### TO DO
+- Add pgx mapping
+- Add sharding in InMemoryStorage
+- Add DLQ for kafka
