@@ -18,7 +18,7 @@ This project is a microservice for managing orders, consuming messages from Kafk
 ### 1. Clone Repository 📂
 ```bash
 git clone https://github.com/Util787/order-base
-cd order-base
+cd order-base/order-base
 ```
 
 ### 2. Configure `.env` ⚙️
